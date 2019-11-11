@@ -1,0 +1,371 @@
+swagger: '2.0'
+info:
+  title: RMC API edited
+  version: 1.0.0
+  description: |
+    ### Authorization
+
+    Authorization: Bearer `<token>`
+host: unmt6enx6c.execute-api.us-east-1.amazonaws.com
+schemes:
+  - https
+basePath: /dev/v1
+produces:
+  - application/json
+consumes:
+  - application/json
+paths:
+  /register:
+    post:
+      summary: Register/Authorize with FB Account Kit verification code
+      parameters:
+        - in: body
+          name: code
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+      tags:
+        - Registration
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              user:
+                $ref: '#/definitions/user'
+  /numbers:
+    get:
+      summary: Get list of servicenumbers
+      tags:
+        - Service numbers
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              numbers:
+                type: array
+                items:
+                  $ref: '#/definitions/number'
+              recommended:
+                type: array
+                items:
+                  $ref: '#/definitions/number'
+  /subscription:
+    post:
+      summary: Verify receipt and update user status
+      parameters:
+        - in: body
+          name: receipt
+          schema:
+            type: object
+            properties:
+              receipt:
+                type: string
+      tags:
+        - Subscriptions
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: '#/definitions/user'
+  /records:
+    post:
+      summary: Get list of user records
+      tags:
+        - Records
+      parameters:
+        - in: body
+          name: params
+          schema:
+            $ref: '#/definitions/paging'
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  $ref: '#/definitions/record'
+  '/records/{recordId}':
+    get:
+      summary: Get record by id
+      tags:
+        - Records
+      parameters:
+        - in: path
+          name: recordId
+          type: string
+          required: true
+          description: Record ID of the record to get
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              record:
+                $ref: '#/definitions/record'
+  '/records/{recordId}/update':
+    post:
+      summary: Update record title by id
+      tags:
+        - Records
+      parameters:
+        - in: path
+          name: recordId
+          type: string
+          required: true
+        - in: body
+          name: params
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              record:
+                $ref: '#/definitions/record'
+  '/records/{recordId}/delete':
+    post:
+      summary: Delete record by id
+      tags:
+        - Records
+      parameters:
+        - in: path
+          name: recordId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              record:
+                $ref: '#/definitions/record'
+  '/records/{recordId}/restore':
+    post:
+      summary: Restore deleted record by id
+      tags:
+        - Records
+      parameters:
+        - in: path
+          name: recordId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              record:
+                $ref: '#/definitions/record'
+  '/records/{recordId}/read':
+    post:
+      summary: Mark as read record by id
+      tags:
+        - Records
+      parameters:
+        - in: path
+          name: recordId
+          type: string
+          required: true
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              record:
+                $ref: '#/definitions/record'
+  /search:
+    post:
+      summary: Search user records
+      tags:
+        - Records
+        - Search
+      parameters:
+        - in: body
+          name: params
+          schema:
+            $ref: '#/definitions/search'
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              records:
+                type: array
+                items:
+                  $ref: '#/definitions/record'
+  /phonenumber:
+    post:
+      summary: Edit own number with FB Account Kit verification code
+      parameters:
+        - in: body
+          name: code
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+      tags:
+        - Number
+        - User
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              token:
+                type: string
+              user:
+                $ref: '#/definitions/user'
+        '422':
+          description: Fail (phone mumber already used)
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+  /deactivate:
+    post:
+      summary: Delete account with all data
+      tags:
+        - Users
+      responses:
+        '200':
+          description: Success
+  /call:
+    post:
+      summary: Search user records
+      tags:
+        - Calls
+      parameters:
+        - in: body
+          name: phoneNumber
+          schema:
+            type: object
+            properties:
+              phoneNumber:
+                type: string
+      responses:
+        '200':
+          description: Success
+  /me:
+    get:
+      summary: Get authorized user info
+      tags:
+        - User
+      responses:
+        '200':
+          description: Success
+          schema:
+            type: object
+            properties:
+              user:
+                $ref: '#/definitions/user'
+definitions:
+  user:
+    type: object
+    properties:
+      userId:
+        type: string
+      phoneNumber:
+        type: string
+      serviceNumber:
+        type: object
+        properties:
+          country:
+            type: string
+          phoneNumber:
+            type: string
+          flag:
+            type: string
+      subscriptionStatus:
+        type: string
+        enum:
+          - none
+          - active
+          - expired
+  number:
+    type: object
+    properties:
+      country:
+        type: string
+      number:
+        type: string
+      flag:
+        type: string
+  record:
+    type: object
+    properties:
+      recordId:
+        type: string
+      time:
+        type: integer
+      duration:
+        type: integer
+      status:
+        type: string
+        enum:
+          - pending
+          - new
+          - read
+      phoneNumber:
+        type: string
+      title:
+        type: string
+      link:
+        type: string
+      waveLink:
+        type: string
+  paging:
+    type: object
+    properties:
+      beforeId:
+        type: string
+      afterId:
+        type: string
+      count:
+        type: integer
+  search:
+    type: object
+    properties:
+      beforeId:
+        type: string
+      afterId:
+        type: string
+      count:
+        type: integer
+      query:
+        type: string
+      phoneNumbers:
+        type: array
+        items:
+          type: string
+securityDefinitions:
+  API Key - 1:
+    name: API Key
+    type: apiKey
+    in: query
