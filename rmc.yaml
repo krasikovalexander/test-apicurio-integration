@@ -1,35 +1,35 @@
-swagger: '2.0'
+---
+swagger: "2.0"
 info:
-  title: RMC API edited
+  title: RMC API edited [test edit]
   version: 1.0.0
   description: |
     ### Authorization
 
     Authorization: Bearer `<token>`
 host: unmt6enx6c.execute-api.us-east-1.amazonaws.com
-schemes:
-  - https
 basePath: /dev/v1
-produces:
-  - application/json
+schemes:
+- https
 consumes:
-  - application/json
+- application/json
+produces:
+- application/json
 paths:
   /register:
     post:
-      summary: Register/Authorize with FB Account Kit verification code
-      parameters:
-        - in: body
-          name: code
-          schema:
-            type: object
-            properties:
-              code:
-                type: string
       tags:
-        - Registration
+      - Registration
+      parameters:
+      - name: code
+        schema:
+          type: object
+          properties:
+            code:
+              type: string
+        in: body
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
@@ -38,13 +38,13 @@ paths:
                 type: string
               user:
                 $ref: '#/definitions/user'
+      summary: Register/Authorize with FB Account Kit verification code
   /numbers:
     get:
-      summary: Get list of servicenumbers
       tags:
-        - Service numbers
+      - Service numbers
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
@@ -57,39 +57,39 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/number'
+      summary: Get list of servicenumbers
   /subscription:
     post:
-      summary: Verify receipt and update user status
-      parameters:
-        - in: body
-          name: receipt
-          schema:
-            type: object
-            properties:
-              receipt:
-                type: string
       tags:
-        - Subscriptions
+      - Subscriptions
+      parameters:
+      - name: receipt
+        schema:
+          type: object
+          properties:
+            receipt:
+              type: string
+        in: body
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
             properties:
               user:
                 $ref: '#/definitions/user'
+      summary: Verify receipt and update user status
   /records:
     post:
-      summary: Get list of user records
       tags:
-        - Records
+      - Records
       parameters:
-        - in: body
-          name: params
-          schema:
-            $ref: '#/definitions/paging'
+      - name: params
+        schema:
+          $ref: '#/definitions/paging'
+        in: body
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
@@ -98,117 +98,117 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/record'
-  '/records/{recordId}':
+      summary: Get list of user records
+  /records/{recordId}:
     get:
+      tags:
+      - Records
+      parameters:
+      - name: recordId
+        description: Record ID of the record to get
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: object
+            properties:
+              record:
+                $ref: '#/definitions/record'
       summary: Get record by id
+  /records/{recordId}/update:
+    post:
       tags:
-        - Records
+      - Records
       parameters:
-        - in: path
-          name: recordId
-          type: string
-          required: true
-          description: Record ID of the record to get
+      - name: recordId
+        in: path
+        required: true
+        type: string
+      - name: params
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+        in: body
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
             properties:
               record:
                 $ref: '#/definitions/record'
-  '/records/{recordId}/update':
-    post:
       summary: Update record title by id
+  /records/{recordId}/delete:
+    post:
       tags:
-        - Records
+      - Records
       parameters:
-        - in: path
-          name: recordId
-          type: string
-          required: true
-        - in: body
-          name: params
-          schema:
-            type: object
-            properties:
-              title:
-                type: string
+      - name: recordId
+        in: path
+        required: true
+        type: string
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
             properties:
               record:
                 $ref: '#/definitions/record'
-  '/records/{recordId}/delete':
-    post:
       summary: Delete record by id
+  /records/{recordId}/restore:
+    post:
       tags:
-        - Records
+      - Records
       parameters:
-        - in: path
-          name: recordId
-          type: string
-          required: true
+      - name: recordId
+        in: path
+        required: true
+        type: string
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
             properties:
               record:
                 $ref: '#/definitions/record'
-  '/records/{recordId}/restore':
-    post:
       summary: Restore deleted record by id
-      tags:
-        - Records
-      parameters:
-        - in: path
-          name: recordId
-          type: string
-          required: true
-      responses:
-        '200':
-          description: Success
-          schema:
-            type: object
-            properties:
-              record:
-                $ref: '#/definitions/record'
-  '/records/{recordId}/read':
+  /records/{recordId}/read:
     post:
-      summary: Mark as read record by id
       tags:
-        - Records
+      - Records
       parameters:
-        - in: path
-          name: recordId
-          type: string
-          required: true
+      - name: recordId
+        in: path
+        required: true
+        type: string
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
             properties:
               record:
                 $ref: '#/definitions/record'
+      summary: Mark as read record by id
   /search:
     post:
-      summary: Search user records
       tags:
-        - Records
-        - Search
+      - Records
+      - Search
       parameters:
-        - in: body
-          name: params
-          schema:
-            $ref: '#/definitions/search'
+      - name: params
+        schema:
+          $ref: '#/definitions/search'
+        in: body
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
@@ -217,22 +217,22 @@ paths:
                 type: array
                 items:
                   $ref: '#/definitions/record'
+      summary: Search user records
   /phonenumber:
     post:
-      summary: Edit own number with FB Account Kit verification code
-      parameters:
-        - in: body
-          name: code
-          schema:
-            type: object
-            properties:
-              code:
-                type: string
       tags:
-        - Number
-        - User
+      - Number
+      - User
+      parameters:
+      - name: code
+        schema:
+          type: object
+          properties:
+            code:
+              type: string
+        in: body
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
@@ -241,50 +241,51 @@ paths:
                 type: string
               user:
                 $ref: '#/definitions/user'
-        '422':
+        "422":
           description: Fail (phone mumber already used)
           schema:
             type: object
             properties:
               error:
                 type: string
+      summary: Edit own number with FB Account Kit verification code
   /deactivate:
     post:
-      summary: Delete account with all data
       tags:
-        - Users
+      - Users
       responses:
-        '200':
+        "200":
           description: Success
+      summary: Delete account with all data
   /call:
     post:
-      summary: Search user records
       tags:
-        - Calls
+      - Calls
       parameters:
-        - in: body
-          name: phoneNumber
-          schema:
-            type: object
-            properties:
-              phoneNumber:
-                type: string
+      - name: phoneNumber
+        schema:
+          type: object
+          properties:
+            phoneNumber:
+              type: string
+        in: body
       responses:
-        '200':
+        "200":
           description: Success
+      summary: Search user records
   /me:
     get:
-      summary: Get authorized user info
       tags:
-        - User
+      - User
       responses:
-        '200':
+        "200":
           description: Success
           schema:
             type: object
             properties:
               user:
                 $ref: '#/definitions/user'
+      summary: Get authorized user info
 definitions:
   user:
     type: object
@@ -303,11 +304,11 @@ definitions:
           flag:
             type: string
       subscriptionStatus:
-        type: string
         enum:
-          - none
-          - active
-          - expired
+        - none
+        - active
+        - expired
+        type: string
   number:
     type: object
     properties:
@@ -327,11 +328,11 @@ definitions:
       duration:
         type: integer
       status:
-        type: string
         enum:
-          - pending
-          - new
-          - read
+        - pending
+        - new
+        - read
+        type: string
       phoneNumber:
         type: string
       title:
@@ -366,6 +367,6 @@ definitions:
           type: string
 securityDefinitions:
   API Key - 1:
-    name: API Key
     type: apiKey
+    name: API Key
     in: query
